@@ -10,6 +10,7 @@ APP_NAME="${SCRIPT_PARENT##*/}"
 PATH_CONFIG="${SCRIPT_PARENT}/config.cfg"
 PATH_DEFAULTS="${SCRIPT_PARENT}/defaults.cfg"
 
+# IMPORTS
 source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/cleanup_cache.sh"
 
@@ -67,7 +68,7 @@ function main {
 		# Check threshold
 		if (( percentage_free < THRESHOLD_PERCENT_FREE )); then
 			
-			local msg="Alert: Low disk space!\nMountpoint: ${mount_point}\nSize: ${size}\nUsed: ${used}\nFree: ${percentage_free}%\nFilesystem: ${filesystem}"
+			local msg="ALERT: LOW DISK SPACE!\nMountpoint: ${mount_point}\nSize: ${size}\nUsed: ${used}\nFree: ${percentage_free}%\nFilesystem: ${filesystem}"
 			log "<3> ${msg}"
 
 			# Check cache
@@ -99,7 +100,7 @@ function main {
 		if (( ALERT_MAIL )); then
 			echo -e "${alert_msg_header}${alert_msg}" | \
 			mail -s "${ALERT_MAIL_SUBJECT}" "${ALERT_MAIL_TO}" 2>/dev/null \
-			&& log "<6> Alert Mail send to: ${ALERT_MAIL_TO}"
+			&& log "<5> Alert Mail send to: ${ALERT_MAIL_TO}"
 		fi
 	fi
 }
