@@ -8,6 +8,7 @@
 # - LOG_TO_FILE
 # - LOG_TO_CONSOLE
 # - LOG_LVL
+# - LOG_TO_CONSOLE_WITH_LVL
 
 function log {
 
@@ -15,6 +16,9 @@ function log {
 	local timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
 	local msg_lvl
 	local msg_only
+
+	# DEFAULTS
+	: "${LOG_TO_CONSOLE_WITH_LVL:=1}"
 
 	# Regex pattern that captures two groups:
 	# <number>
