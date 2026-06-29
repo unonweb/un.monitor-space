@@ -11,6 +11,7 @@ PATH_CONFIG="${SCRIPT_PARENT}/config.cfg"
 PATH_DEFAULTS="${SCRIPT_PARENT}/defaults.cfg"
 
 source "${SCRIPT_DIR}/lib/log.sh"
+source "${SCRIPT_DIR}/lib/cleanup_cache.sh"
 
 function main {
 
@@ -25,6 +26,11 @@ function main {
 	else
 		echo "<4>WARN: No config file found at ${PATH_CONFIG}. Using defaults ..."
 		source "${PATH_DEFAULTS}"
+	fi
+
+	if [[ ! -f "${CACHE_FILE}" ]]; then
+		log "<6> Creating cache file at: ${CACHE_FILE}"
+		touch "${CACHE_FILE}"
 	fi
 
 	for type in "${DF_EXCLUDE_TYPES[@]}"; do
@@ -55,15 +61,29 @@ function main {
 		# Calculate
 		percentage_free=$((100 - percentage_used))
 
+		# Cleanup Cache
+		cleanup_cache
+
 		# Check threshold
 		if (( percentage_free < THRESHOLD_PERCENT_FREE )); then
 			
 			local msg="Alert: Low disk space!\nMountpoint: ${mount_point}\nSize: ${size}\nUsed: ${used}\nFree: ${percentage_free}%\nFilesystem: ${filesystem}"
-			alert_msg+="${msg}\n"
-			log "<3> ${msg}"			
+			log "<3> ${msg}"
+
+			# Check cache
+			if [[ -f "${CACHE_FILE}" ]] && grep --quiet --fixed-strings "|${mount_point}" "${CACHE_FILE}"; then
+				# mount_point found in cache, skip alerting
+				log "<7> Skipping alert for '${mount_point}' (already alerted within past ${CACHE_TTL_HOURS} hours)."
+			else
+				# Alert msg
+				alert_msg+="${msg}\n"
+				# Log the alert to the cache with the current epoch timestamp
+				echo "$(date +%s)|${mount_point}" >> "${CACHE_FILE}"
+			fi
 		else
 			log "<7> ${mount_point}: ${percentage_free}% free space."
 		fi
+
 	done < <(df --human-readable --portability --local ${df_args})
 
 	if (( ALERT_MAIL )) && [[ -z "${ALERT_MAIL_TO}" ]]; then
