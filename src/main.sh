@@ -29,6 +29,13 @@ function main {
 		source "${PATH_DEFAULTS}"
 	fi
 
+	# MKDIR state
+	if [[ ! -d "${STATE_DIR}" ]]; then
+		log "<6> Creating state dir at: ${STATE_DIR}"
+		mkdir -p "${STATE_DIR}"
+	fi
+
+	# TOUCH cache
 	if [[ ! -f "${CACHE_FILE}" ]]; then
 		log "<6> Creating cache file at: ${CACHE_FILE}"
 		touch "${CACHE_FILE}"
