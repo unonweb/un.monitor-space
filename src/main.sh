@@ -76,6 +76,7 @@ function main {
 		# Check threshold
 		if (( percentage_free < THRESHOLD_PERCENT_FREE )); then
 			
+			# Below threshold
 			local msg="ALERT: LOW DISK SPACE!\nMountpoint: ${mount_point}\nSize: ${size}\nUsed: ${used}\nFree: ${percentage_free}%\nFilesystem: ${filesystem}"
 			log "<3> ${msg}"
 
@@ -90,10 +91,11 @@ function main {
 				echo "$(date +%s)|${mount_point}" >> "${CACHE_FILE}"
 			fi
 		else
+			# Above threshold
 			log "<7> ${mount_point}: ${percentage_free}% free space."
 		fi
 
-	done < <(df --human-readable --portability --local ${df_args})
+	done < <(df --human-readable --portability --local --exclude-type=btrfs ${df_args})
 
 	if (( ALERT_MAIL )) && [[ -z "${ALERT_MAIL_TO}" ]]; then
 		log "<3> Required var not set: ALERT_MAIL_TO"
