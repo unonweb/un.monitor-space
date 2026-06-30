@@ -12,6 +12,7 @@ PATH_DEFAULTS="${SCRIPT_PARENT}/defaults.cfg"
 
 # IMPORTS
 source "${SCRIPT_DIR}/lib/log.sh"
+source "${SCRIPT_DIR}/lib/check_btrfs.sh"
 source "${SCRIPT_DIR}/lib/cleanup_cache.sh"
 
 function main {
@@ -46,14 +47,6 @@ function main {
 	done
 
 	while read -r filesystem size used avail use_pct mount_point; do
-		
-		# DEBUG
-		# log "<7> filesystem: ${filesystem}"
-		# log "<7> size: ${size}"
-		# log "<7> used: ${used}"
-		# log "<7> avail: ${avail}"
-		# log "<7> use_pct: ${use_pct}"
-		# log "<7> mount_point: ${mount_point}"
 
 		# Skip the header row
 		[[ "${filesystem}" == "Filesystem" || "${filesystem}" == "Dateisystem" ]] && continue
@@ -96,6 +89,8 @@ function main {
 		fi
 
 	done < <(df --human-readable --portability --local --exclude-type=btrfs ${df_args})
+
+	check_btrfs
 
 	if (( ALERT_MAIL )) && [[ -z "${ALERT_MAIL_TO}" ]]; then
 		log "<3> Required var not set: ALERT_MAIL_TO"
