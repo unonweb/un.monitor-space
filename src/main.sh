@@ -56,7 +56,7 @@ function main {
 		# log "<7> mount_point: ${mount_point}"
 
 		# Skip the header row
-		[[ "${filesystem}" == "Filesystem" ]] && continue
+		[[ "${filesystem}" == "Filesystem" || "${filesystem}" == "Dateisystem" ]] && continue
 		
 		# Strip the literal '%' sign from the end
 		percentage_used="${use_pct%%%}"
@@ -64,6 +64,7 @@ function main {
 		# Quick safety check: Ensure percentage_used is actually a number before doing math
 		if [[ ! "${percentage_used}" =~ ^[0-9]+$ ]]; then
 			log "<3> Not a number: ${percentage_used}"
+			continue
 		fi
 		
 		# Calculate
