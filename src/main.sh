@@ -42,9 +42,13 @@ function main {
 		touch "${CACHE_FILE}"
 	fi
 
+	# BUILD args
 	for type in "${DF_EXCLUDE_TYPES[@]}"; do
 		df_args+="--exclude-type=${type} "
 	done
+
+	# CLEANUP Cache
+	cleanup_cache
 
 	while read -r filesystem size used avail use_pct mount_point; do
 
@@ -62,9 +66,6 @@ function main {
 		
 		# Calculate
 		percentage_free=$((100 - percentage_used))
-
-		# Cleanup Cache
-		cleanup_cache
 
 		# Check threshold
 		if (( percentage_free < THRESHOLD_PERCENT_FREE )); then
