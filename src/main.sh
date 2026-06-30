@@ -25,6 +25,11 @@ function main {
 
 	log "<6> Starting ${APP_NAME}"
 
+	if [ "${UID}" -ne 0 ]; then
+  		echo "This script must be run as root."
+  		exit 1
+	fi
+
 	# CONFIG & DEFAULTS
 	if [[ -r ${PATH_CONFIG} ]]; then
 		source "${PATH_CONFIG}"
