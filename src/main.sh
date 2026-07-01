@@ -16,7 +16,7 @@ ALERT_MSG=""
 source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/alert.sh"
 source "${SCRIPT_DIR}/lib/report.sh"
-source "${SCRIPT_DIR}/lib/check_filesystems.sh"
+source "${SCRIPT_DIR}/lib/check_disk_free.sh"
 source "${SCRIPT_DIR}/lib/check_btrfs.sh"
 source "${SCRIPT_DIR}/lib/cleanup_cache.sh"
 
@@ -58,7 +58,7 @@ function main {
 
 	# MAIN
 	cleanup_cache
-	check_filesystems
+	check_disk_free
 	check_btrfs
 
 	# ALERT

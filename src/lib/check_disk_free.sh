@@ -4,8 +4,9 @@
 # - CACHE_FILE
 # - CACHE_TTL_HOURS
 # - ALERT_MSG
+# - REPORT_MSG
 
-function check_filesystems {
+function check_disk_free
 	
 	while read -r filesystem size used avail use_pct mount_point; do
 
