@@ -1,8 +1,8 @@
 # REQUIRES
 # ========
 # - ALERT_MAIL
-# - ALERT_MAIL_TO
-# - ALERT_MAIL_SUBJECT
+# - MAIL_TO
+# - MAIL_SUBJECT
 
 function alert {
 
@@ -12,8 +12,8 @@ function alert {
 		return 0
 	fi
 
-	if (( ALERT_MAIL )) && [[ -z "${ALERT_MAIL_TO}" ]]; then
-		log "<3> Required var not set: ALERT_MAIL_TO"
+	if (( ALERT_MAIL )) && [[ -z "${MAIL_TO}" ]]; then
+		log "<3> Required var not set: MAIL_TO"
 		return 1
 	fi
 
@@ -24,8 +24,8 @@ function alert {
 		alert_msg_header+="HOSTNAME: ${HOSTNAME}\n\n"
 		
 		echo -e "${alert_msg_header}${alert_msg}" | \
-		mail -s "${ALERT_MAIL_SUBJECT}" "${ALERT_MAIL_TO}" 2>/dev/null \
-		&& log "<5> Alert Mail send to: ${ALERT_MAIL_TO}"
+		mail -s "${MAIL_SUBJECT}" "${MAIL_TO}" 2>/dev/null \
+		&& log "<5> Alert Mail send to: ${MAIL_TO}"
 	
 	fi
 }
