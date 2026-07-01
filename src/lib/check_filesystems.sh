@@ -13,22 +13,22 @@ function check_filesystems {
 		[[ "${filesystem}" == "Filesystem" || "${filesystem}" == "Dateisystem" ]] && continue
 		
 		# Strip the literal '%' sign from the end
-		percentage_used="${use_pct%%%}"
+		local pct_used="${use_pct%%%}"
 
-		# Quick safety check: Ensure percentage_used is actually a number before doing math
-		if [[ ! "${percentage_used}" =~ ^[0-9]+$ ]]; then
-			log "<3> Not a number: ${percentage_used}"
+		# Safety check: Ensure pct_used is actually a number before doing math
+		if [[ ! "${pct_used}" =~ ^[0-9]+$ ]]; then
+			log "<3> Not a number: ${pct_used}"
 			continue
 		fi
 		
 		# Calculate
-		percentage_free=$((100 - percentage_used))
+		local pct_free=$((100 - pct_used))
 
 		# THRESHOLD
-		if (( percentage_free < THRESHOLD_PERCENT_FREE )); then
+		if (( pct_free < THRESHOLD_PERCENT_FREE )); then
 			
 			# Below threshold
-			local msg="ALERT: LOW DISK SPACE!\nMountpoint: ${mount_point}\nSize: ${size}\nUsed: ${used}\nFree: ${percentage_free}%\nFilesystem: ${filesystem}"
+			local msg="ALERT: LOW DISK SPACE!\nMountpoint: ${mount_point}\nSize: ${size}\nUsed: ${used}\nFree: ${pct_free}%\nFilesystem: ${filesystem}"
 			log "<3> ${msg}"
 
 			# CACHE
@@ -43,8 +43,17 @@ function check_filesystems {
 			fi
 		else
 			# Above threshold
-			log "<7> ${mount_point}: ${percentage_free}% free space."
+			log "<7> ${mount_point}: ${pct_free}% free space."
 		fi
+		
+		# REPORT
+		REPORT_MSG+="MOUNT: ${mount_point}\n"
+		REPORT_MSG+="TYPE: ${filesystem}\n"
+		REPORT_MSG+="---\n"
+		REPORT_MSG+="size: ${size}\n"
+		REPORT_MSG+="used: ${used}\n"
+		REPORT_MSG+="avail: ${avail} (calculated: ${pct_free})\n"
+		REPORT_MSG+="use_pct: ${use_pct} (calculated: ${pct_used})\n"
 
 	done < <(df --human-readable --portability --local --exclude-type=btrfs ${df_args})
 }

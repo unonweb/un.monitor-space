@@ -15,6 +15,7 @@ ALERT_MSG=""
 # IMPORTS
 source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/alert.sh"
+source "${SCRIPT_DIR}/lib/report.sh"
 source "${SCRIPT_DIR}/lib/check_filesystems.sh"
 source "${SCRIPT_DIR}/lib/check_btrfs.sh"
 source "${SCRIPT_DIR}/lib/cleanup_cache.sh"
@@ -62,6 +63,9 @@ function main {
 
 	# ALERT
 	alert "${ALERT_MSG}"
+
+	# REPORT
+	report "${REPORT_MSG}"
 }
 
 main

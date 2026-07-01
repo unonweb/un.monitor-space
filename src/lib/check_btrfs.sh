@@ -5,6 +5,7 @@
 # - CACHE_FILE
 # - CACHE_TTL_HOURS
 # - ALERT_MSG
+# - REPORT_MSG
 
 function check_btrfs {
 
@@ -19,23 +20,23 @@ function check_btrfs {
 
 		log "<6> Checking Btrfs filesystem mounted at: ${mount_point}"
 		# Query btrfs for data in Gigabytes (requires root/sudo)
-		btrfs_output=$(btrfs filesystem usage -g "${mount_point}" 2>/dev/null)
+		local btrfs_output=$(btrfs filesystem usage -g "${mount_point}" 2>/dev/null)
 		
 		# Extract Total Device Size (Integer only) using Bash regex
 		if [[ "${btrfs_output}" =~ Device[[:space:]]+size:[[:space:]]*([0-9]+) ]]; then
-			total_size="${BASH_REMATCH[1]}"
+			local total_size="${BASH_REMATCH[1]}"
 		fi
 		
 		# Extract Estimated Minimum Free Space (Integer only)
 		# Represents the guaranteed space remaining
 		if [[ "${btrfs_output}" =~ min:[[:space:]]*([0-9]+) ]]; then
-			min_free="${BASH_REMATCH[1]}"
+			local min_free="${BASH_REMATCH[1]}"
 		fi
 		
 		# Calculate percentage using Bash integer math
 		if [[ -n "${total_size}" && -n "${min_free}" && "${total_size}" -gt 0 ]]; then
 			# Bash math trick: (Free * 100) / Total gives us the floor percentage
-			pct_free=$(( (min_free * 100) / total_size ))
+			local pct_free=$(( (min_free * 100) / total_size ))
 			
 			log "<6> Total Size: ${total_size} GiB"
 			log "<6> Free Space: ${min_free} GiB (${pct_free}% free)"
@@ -60,6 +61,16 @@ function check_btrfs {
 		else
 			log "<3> Error: Could not calculate space metrics for ${mount_point}"
 		fi
+
+		# REPORT
+		REPORT_MSG+="MOUNT: ${mount_point}\n"
+		REPORT_MSG+="TYPE: BTRFS\n"
+		REPORT_MSG+="---\n"
+		REPORT_MSG+="total_size: ${total_size}\n"
+		REPORT_MSG+="min_free: ${min_free}\n"
+		REPORT_MSG+="pct_free: ${pct_free}\n"
+		REPORT_MSG+="THRESHOLD_PERCENT_FREE: ${THRESHOLD_PERCENT_FREE}\n\n"
+		REPORT_MSG+="${btrfs_output}"
 
 	done < /proc/mounts
 }
