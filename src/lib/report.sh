@@ -15,6 +15,27 @@ function report {
 
 	local interval_seconds
 
+	# IMPORTS
+	source "${SCRIPT_DIR}/lib/set_state.sh"
+	source "${SCRIPT_DIR}/lib/get_state.sh"
+	source "${SCRIPT_DIR}/lib/log.sh"
+
+	# CHECK internal dependencies
+	for fctn in set_state get_state log; do
+    	if ! declare -f "${fctn}" > /dev/null; then
+        	echo "<3> Error: Required function missing: ${fctn}" >&2
+        	return 1
+    	fi
+	done
+
+	# CHECK external dependencies
+	for cmd in mail; do
+    	if ! command -v "${cmd}" &> /dev/null; then
+        	log "<3> Error: Required external command missing: ${cmd}" >&2
+        	return 1
+    	fi
+	done
+	
 	if (( ! REPORT_MAIL )); then
 		return 0
 	fi
