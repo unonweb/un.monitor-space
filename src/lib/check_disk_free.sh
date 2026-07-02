@@ -8,6 +8,14 @@
 
 function check_disk_free
 	
+	# CHECK external dependencies
+	for cmd in df; do
+    	if ! command -v "${cmd}" &> /dev/null; then
+        	log "<3> Error: Required external command missing: ${cmd}" >&2
+        	return 1
+    	fi
+	done
+
 	while read -r filesystem size used avail use_pct mount_point; do
 
 		# Skip the header row

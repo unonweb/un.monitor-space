@@ -9,6 +9,14 @@
 
 function check_btrfs {
 
+	# CHECK external dependencies
+	for cmd in btrfs; do
+    	if ! command -v "${cmd}" &> /dev/null; then
+        	log "<3> Error: Required external command missing: ${cmd}" >&2
+        	return 1
+    	fi
+	done
+
 	# Loop through /proc/mounts to find all 'btrfs' filesystems
 	# We use a while loop to read line-by-line using Bash internals
 	while read -r device mount_point fs_type options _; do
