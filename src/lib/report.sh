@@ -6,12 +6,15 @@
 
 # REQUIRES
 # ========
-# REPORT_MAIL
-# REPORT_PERIOD
+# - REPORT_MAIL
+# - REPORT_PERIOD
+# - MAIL_TO
+# - MAIL_SUBJECT
 
 function report {
+
 	local disk="${1}"
-	local msg="${2}"
+	local input="${2}"
 
 	local interval_seconds
 
@@ -35,17 +38,26 @@ function report {
         	return 1
     	fi
 	done
-	
+
+	# CHECK vars
+	for var in REPORT_MAIL REPORT_PERIOD MAIL_TO; do
+		if [[ -z "${!var}" ]]; then
+			log "<3> Required var missing: ${var}"
+			return 1
+		fi
+	done
+
+	# CHECK report at all?
 	if (( ! REPORT_MAIL )); then
 		return 0
 	fi
 
 	case "${REPORT_PERIOD}" in
-        daily)
+        "daily")
 			interval_seconds=86400 ;;
-        weekly)
+        "weekly")
 			interval_seconds=604800 ;;
-        monthly)
+        "monthly")
 			interval_seconds=2592000 ;;
         *)       
             log "<3> ERROR: Invalid interval '${REPORT_PERIOD}' configured."
@@ -57,10 +69,13 @@ function report {
     local current_time=$(date +%s) # Current epoch time in seconds
     local last_report_time=$(get_state "global" "last_scheduled_report_timestamp")
 
-    # Initialize if this is the script's very first run
+    # If run the first time
+	# init timestamp
+	# return
     if [[ -z "${last_report_time}" ]]; then
         log "<6> No previous report timestamp found. Initializing to current time."
         set_state "global" "last_scheduled_report_timestamp" "${current_time}"
+
         return 0
     fi
 
@@ -70,12 +85,32 @@ function report {
 
     # Check if the interval has matured
     if (( seconds_elapsed >= interval_seconds )); then
-        log "<6> Interval (${interval}) reached! Sending report..."
 
-		echo -e "${msg}" | \
-			mail -s "${MAIL_SUBJECT} [${disk}] REPORT" "${MAIL_TO}" \
-			&& log "<5> Mail-Report sent to ${MAIL_TO}" \
-			&& return 0
+        log "<5> Interval (${REPORT_PERIOD}) reached! Sending report..."
+		local rc_mail
+
+		# Check if the input is a file
+		if [[ -f "${input}" ]]; then
+			# It's a file!
+			# Stream it directly to preserve newlines
+			mail -s "${MAIL_SUBJECT} [${disk}] REPORT" "${MAIL_TO}" < "${input}"
+			rc_mail=${?}
+		else
+			# It's a raw string! 
+			# Use a here-string (<<<) to preserve newlines 
+			mail -s "${MAIL_SUBJECT} [${disk}] REPORT" "${MAIL_TO}" <<< "${input}"
+			rc_mail=${?}
+		fi
+
+		if [[ ${rc_mail} -eq 0 ]]; then
+			log "<5> Mail-Report successfully sent to ${MAIL_TO}"
+			return 0
+		else
+			log "<3> Failed to send Mail-Report to ${MAIL_TO}"
+			return 1
+		fi
+	else
+		log "<6> Not sending Mail-Report because REPORT_PERIOD ${REPORT_PERIOD} is not reached"
 	fi
 
 }
