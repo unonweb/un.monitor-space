@@ -24,8 +24,7 @@ function main {
 
 	local df_args=""
 
-	log "<6> Starting ${APP_NAME}"
-
+	# CHECK root
 	if [ "${UID}" -ne 0 ]; then
   		echo "This script must be run as root."
   		exit 1
@@ -38,6 +37,22 @@ function main {
 		echo "<4>WARN: No config file found at ${PATH_CONFIG}. Using defaults ..."
 		source "${PATH_DEFAULTS}"
 	fi
+
+	# CHECK internal dependencies
+	for fctn in log alert report check_disk_free check_btrfs cleanup_cache; do
+    	if ! declare -f "${fctn}" > /dev/null; then
+        	echo "<3> Error: Required function missing: ${fctn}" >&2
+        	exit 1
+    	fi
+	done
+
+	# CHECK vars
+	for var in STATE_DIR; do
+		if [[ -z "${!var}" ]]; then
+			log "<3> Required var missing: ${var}"
+			exit 1
+		fi
+	done
 
 	# MKDIR state
 	if [[ ! -d "${STATE_DIR}" ]]; then
