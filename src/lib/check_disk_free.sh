@@ -6,7 +6,7 @@
 # - ALERT_MSG
 # - REPORT_MSG
 
-function check_disk_free
+function check_disk_free {
 	
 	# CHECK external dependencies
 	for cmd in df; do
@@ -64,5 +64,5 @@ function check_disk_free
 		REPORT_MSG+="avail: ${avail} (calculated: ${pct_free})\n"
 		REPORT_MSG+="use_pct: ${use_pct} (calculated: ${pct_used})\n"
 
-	done < <(df --human-readable --portability --local --exclude-type=btrfs ${df_args})
+	done < <(df --human-readable --portability --local --exclude-type=btrfs "${df_args}")
 }
