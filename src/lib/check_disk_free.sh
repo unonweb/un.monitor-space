@@ -54,7 +54,7 @@ function check_disk_free {
 				log "<7> Skipping alert for '${mount_point}' (already alerted within past ${CACHE_TTL_HOURS} hours)."
 			else
 				# ALERT msg
-				ALERT_MSG+="${alert_msg}\n\n"
+				ALERT_MSG+="${alert_msg}\n"
 				# Log the alert to the cache with the current epoch timestamp
 				echo "$(date +%s)|${mount_point}" >> "${CACHE_FILE}"
 			fi
