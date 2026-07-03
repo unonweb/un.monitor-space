@@ -48,6 +48,11 @@ function log {
 			# Remove space after "<num> "
 			message="${message/> />}"
 			msg_only="${msg_only/> />}"
+			shopt -s extglob
+			# Replaces any sequence of one or more tabs/spaces with a single space
+			message="${message//+([[:blank:]])/ }"
+			msg_only="${msg_only//+([[:blank:]])/ }"
+			shopt -u extglob
 			
 			if (( LOG_TO_CONSOLE_WITH_LVL )); then
 				# Use this when connected to systemd journal
