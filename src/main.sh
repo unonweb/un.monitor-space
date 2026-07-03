@@ -21,6 +21,8 @@ source "${SCRIPT_DIR}/lib/report.sh"
 source "${SCRIPT_DIR}/lib/check_disk_free.sh"
 source "${SCRIPT_DIR}/lib/check_btrfs.sh"
 source "${SCRIPT_DIR}/lib/cleanup_cache.sh"
+source "${SCRIPT_DIR}/lib/set_state.sh"
+source "${SCRIPT_DIR}/lib/get_state.sh"
 
 function main {
 

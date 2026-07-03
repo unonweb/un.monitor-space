@@ -15,13 +15,7 @@ function report {
 
 	local disk="${1}"
 	local input="${2}"
-
 	local interval_seconds
-
-	# IMPORTS
-	source "${SCRIPT_DIR}/lib/set_state.sh"
-	source "${SCRIPT_DIR}/lib/get_state.sh"
-	source "${SCRIPT_DIR}/lib/log.sh"
 
 	# CHECK internal dependencies
 	for fctn in set_state get_state log; do
