@@ -54,6 +54,9 @@ function main {
 		fi
 	done
 
+	# SET vars
+	CACHE_FILE="${STATE_DIR}/cache.txt"
+
 	# MKDIR state
 	if [[ ! -d "${STATE_DIR}" ]]; then
 		log "<6> Creating state dir at: ${STATE_DIR}"
