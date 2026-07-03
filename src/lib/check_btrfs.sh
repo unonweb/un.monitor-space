@@ -55,7 +55,7 @@ function check_btrfs {
 				# CACHE
 				if [[ -f "${CACHE_FILE}" ]] && grep --quiet --fixed-strings "|${mount_point}" "${CACHE_FILE}"; then
 					# mount_point found in cache, skip alerting
-					log "<7> Skipping alert for '${mount_point}' (already alerted within past ${CACHE_TTL_HOURS} hours)."
+					log "<6> Skipping alert for '${mount_point}' (already alerted within past ${CACHE_TTL_HOURS} hours)."
 				else
 					# ALERT msg
 					local alert_msg=""
