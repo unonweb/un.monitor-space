@@ -46,8 +46,8 @@ function check_btrfs {
 			# Bash math trick: (Free * 100) / Total gives us the floor percentage
 			local pct_free=$(( (min_free * 100) / total_size ))
 			
-			log "<6> Total Size: ${total_size} GiB"
-			log "<6> Free Space: ${min_free} GiB (${pct_free}% free)"
+			log "<7> Total Size: ${total_size} GiB"
+			log "<7> Free Space: ${min_free} GiB (${pct_free}% free)"
 			
 			# THRESHOLD
 			if (( pct_free < THRESHOLD_PERCENT_FREE )); then
@@ -58,11 +58,20 @@ function check_btrfs {
 					log "<7> Skipping alert for '${mount_point}' (already alerted within past ${CACHE_TTL_HOURS} hours)."
 				else
 					# ALERT msg
-					ALERT_MSG+="${msg}\n"
+					local alert_msg=""
+					alert_msg+="ALERT: 		DISK SPACE BELOW THRESHOLD!\n"
+					alert_msg+="Mountpoint: ${mount_point}\n"
+					alert_msg+="Total Size: ${total_size}\n"
+					alert_msg+="min_free:	${min_free}\n"
+					alert_msg+="pct_free: 	${pct_free}%\n"
+					alert_msg+="Threshold: 	${THRESHOLD_PERCENT_FREE}%\n"
+
+					ALERT_MSG+="${msg}\n\n"
+
 					# Log the alert to the cache with the current epoch timestamp
 					echo "$(date +%s)|${mount_point}" >> "${CACHE_FILE}"
 				fi
-				log "<4> ALERT: Free space at ${mount_point} is ${pct_free}% and below threshold (${THRESHOLD_PERCENT_FREE}%)!"
+				log "<4> ${alert_msg}"
 			else
 				log "<6> Space of status of ${mount_point}: OK"
 			fi
@@ -71,8 +80,8 @@ function check_btrfs {
 		fi
 
 		# REPORT
-		REPORT_MSG+="MOUNT:	${mount_point}\n"
-		REPORT_MSG+="TYPE: 	BTRFS\n"
+		REPORT_MSG+="MOUNT:			${mount_point}\n"
+		REPORT_MSG+="TYPE: 			BTRFS\n"
 		REPORT_MSG+="---\n"
 		REPORT_MSG+="total_size:	${total_size}\n"
 		REPORT_MSG+="min_free:		${min_free}\n"
