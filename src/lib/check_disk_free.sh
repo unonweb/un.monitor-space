@@ -37,8 +37,15 @@ function check_disk_free {
 		if (( pct_free < THRESHOLD_PERCENT_FREE )); then
 			
 			# Below threshold
-			local msg="ALERT: LOW DISK SPACE!\nMountpoint: ${mount_point}\nSize: ${size}\nUsed: ${used}\nFree: ${pct_free}%\nFilesystem: ${filesystem}"
-			log "<3> ${msg}"
+			local alert_msg=""
+			alert_msg+="ALERT: 		LOW DISK SPACE!\n"
+			alert_msg+="Mountpoint: ${mount_point}\n"
+			alert_msg+="Size: 		${size}\n"
+			alert_msg+="Used: 		${used}\n"
+			alert_msg+="Free: 		${pct_free}%\n"
+			alert_msg+="Filesystem: ${filesystem}"
+			
+			log "<3> ${alert_msg}"
 
 			# CACHE
 			if [[ -f "${CACHE_FILE}" ]] && grep --quiet --fixed-strings "|${mount_point}" "${CACHE_FILE}"; then
@@ -46,7 +53,7 @@ function check_disk_free {
 				log "<7> Skipping alert for '${mount_point}' (already alerted within past ${CACHE_TTL_HOURS} hours)."
 			else
 				# ALERT msg
-				ALERT_MSG+="${msg}\n"
+				ALERT_MSG+="${alert_msg}\n\n"
 				# Log the alert to the cache with the current epoch timestamp
 				echo "$(date +%s)|${mount_point}" >> "${CACHE_FILE}"
 			fi
@@ -56,13 +63,13 @@ function check_disk_free {
 		fi
 		
 		# REPORT
-		REPORT_MSG+="MOUNT: ${mount_point}\n"
-		REPORT_MSG+="TYPE: ${filesystem}\n"
+		REPORT_MSG+="MOUNT: 	${mount_point}\n"
+		REPORT_MSG+="TYPE: 		${filesystem}\n"
 		REPORT_MSG+="---\n"
-		REPORT_MSG+="size: ${size}\n"
-		REPORT_MSG+="used: ${used}\n"
-		REPORT_MSG+="avail: ${avail} (calculated: ${pct_free})\n"
-		REPORT_MSG+="use_pct: ${use_pct} (calculated: ${pct_used})\n"
+		REPORT_MSG+="size: 		${size}\n"
+		REPORT_MSG+="used: 		${used}\n"
+		REPORT_MSG+="avail: 	${avail} (calculated: ${pct_free})\n"
+		REPORT_MSG+="use_pct: 	${use_pct} (calculated: ${pct_used})\n"
 
 	done < <(df --human-readable --portability --local --exclude-type=btrfs "${df_args}")
 }
