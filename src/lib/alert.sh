@@ -24,7 +24,7 @@ function alert {
 		alert_msg_header+="HOSTNAME: ${HOSTNAME}\n\n"
 		
 		echo -e "${alert_msg_header}${alert_msg}" | \
-		mail -s "${MAIL_SUBJECT}" "${MAIL_TO}" 2>/dev/null \
+		mail -s "${MAIL_SUBJECT} ALERT" "${MAIL_TO}" 2>/dev/null \
 		&& log "<5> Alert Mail send to: ${MAIL_TO}"
 	
 	fi
