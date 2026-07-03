@@ -8,6 +8,14 @@
 
 function check_disk_free {
 	
+	# CHECK internal dependencies
+	for fctn in log trim; do
+    	if ! declare -f "${fctn}" > /dev/null; then
+        	echo "<3> Error: Required function missing: ${fctn}" >&2
+        	return 1
+    	fi
+	done
+
 	# CHECK external dependencies
 	for cmd in df; do
     	if ! command -v "${cmd}" &> /dev/null; then
