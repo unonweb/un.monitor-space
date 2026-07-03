@@ -47,8 +47,8 @@ function check_disk_free {
 			# Below threshold
 			local alert_msg=""
 			alert_msg+="ALERT: 		DISK SPACE BELOW THRESHOLD!\n"
-			alert_msg+="MOUNT:		${mount_point}\n"
-			alert_msg+="FS:			${filesystem}\n"
+			alert_msg+="MOUNTPOINT:	${mount_point}\n"
+			alert_msg+="FILESYSTEM:	${filesystem}\n"
 			alert_msg+="Size: 		${size}\n"
 			alert_msg+="Used: 		${used}\n"
 			alert_msg+="Free: 		${pct_free}%\n"
