@@ -20,8 +20,8 @@ function alert {
 	if [[ -n "${alert_msg}" ]]; then
 
 		# ALERT
-		alert_msg_header+="DATE: $(date "+%Y-%m-%d %H:%M:%S")\n"
-		alert_msg_header+="HOSTNAME: ${HOSTNAME}\n\n"
+		alert_msg_header+="DATE:		$(date "+%Y-%m-%d %H:%M:%S")\n"
+		alert_msg_header+="HOSTNAME:	${HOSTNAME}\n\n"
 		
 		echo -e "${alert_msg_header}${alert_msg}" | \
 		mail -s "${MAIL_SUBJECT} ALERT" "${MAIL_TO}" 2>/dev/null \
