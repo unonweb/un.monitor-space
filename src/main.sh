@@ -14,6 +14,7 @@ ALERT_MSG=""
 REPORT_MSG=""
 
 # IMPORTS
+source "${SCRIPT_DIR}/lib/trim.sh"
 source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/alert.sh"
 source "${SCRIPT_DIR}/lib/report.sh"
