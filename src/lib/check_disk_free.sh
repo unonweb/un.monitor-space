@@ -38,12 +38,13 @@ function check_disk_free {
 			
 			# Below threshold
 			local alert_msg=""
-			alert_msg+="ALERT: 		LOW DISK SPACE!\n"
-			alert_msg+="Mountpoint: ${mount_point}\n"
+			alert_msg+="ALERT: 		DISK SPACE BELOW THRESHOLD!\n"
+			alert_msg+="FS:			${filesystem}\n"
+			alert_msg+="MOUNT:		${mount_point}\n"
 			alert_msg+="Size: 		${size}\n"
 			alert_msg+="Used: 		${used}\n"
 			alert_msg+="Free: 		${pct_free}%\n"
-			alert_msg+="Filesystem: ${filesystem}"
+			alert_msg+="Threshold:	${THRESHOLD_PERCENT_FREE}%\n"
 			
 			log "<3> ${alert_msg}"
 
@@ -63,13 +64,13 @@ function check_disk_free {
 		fi
 		
 		# REPORT
+		REPORT_MSG+="FS:		${filesystem}\n"
 		REPORT_MSG+="MOUNT: 	${mount_point}\n"
-		REPORT_MSG+="TYPE: 		${filesystem}\n"
 		REPORT_MSG+="---\n"
-		REPORT_MSG+="size: 		${size}\n"
-		REPORT_MSG+="used: 		${used}\n"
-		REPORT_MSG+="avail: 	${avail} (calculated: ${pct_free})\n"
-		REPORT_MSG+="use_pct: 	${use_pct} (calculated: ${pct_used})\n"
+		REPORT_MSG+="Size: 		${size}\n"
+		REPORT_MSG+="Used: 		${used}\n"
+		REPORT_MSG+="Free:	 	${pct_free}%\n"
+		REPORT_MSG+="Threshold:	${THRESHOLD_PERCENT_FREE}%\n"
 
 	done < <(df --human-readable --portability --local --exclude-type=btrfs "${df_args}")
 }
