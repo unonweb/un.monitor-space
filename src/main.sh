@@ -11,6 +11,7 @@ PATH_CONFIG="${SCRIPT_PARENT}/config.cfg"
 PATH_DEFAULTS="${SCRIPT_PARENT}/defaults.cfg"
 
 ALERT_MSG=""
+REPORT_MSG=""
 
 # IMPORTS
 source "${SCRIPT_DIR}/lib/log.sh"
