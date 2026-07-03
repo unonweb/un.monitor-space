@@ -80,7 +80,6 @@ function report {
     fi
 
     local seconds_elapsed=$(( current_time - last_report_time ))
-
     log "<7> Time since last report: ${seconds_elapsed}s / Target: ${interval_seconds}s"
 
     # Check if the interval has matured
@@ -104,6 +103,7 @@ function report {
 
 		if [[ ${rc_mail} -eq 0 ]]; then
 			log "<5> Mail-Report successfully sent to ${MAIL_TO}"
+			set_state "global" "last_scheduled_report_timestamp" "${current_time}"
 			return 0
 		else
 			log "<3> Failed to send Mail-Report to ${MAIL_TO}"
