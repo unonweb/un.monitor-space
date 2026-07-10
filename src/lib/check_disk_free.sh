@@ -26,9 +26,9 @@ function check_disk_free {
 	done
 
 	# BUILD args
-	local df_args=""
+	local df_args=()
 	for type in "${DF_EXCLUDE_TYPES[@]}"; do
-		df_args+="--exclude-type=${type} "
+		df_args+=("--exclude-type=${type}")
 	done
 
 	REPORT_MSG+="DISK FREE\n"
@@ -85,11 +85,11 @@ function check_disk_free {
 		REPORT_MSG+="MOUNT: 		${mount_point}\n"
 		REPORT_MSG+="Size: 		${size}\n"
 		REPORT_MSG+="Used: 		${used}\n"
-		REPORT_MSG+="Free:	 	${pct_free}%\n"
 		REPORT_MSG+="Threshold:	${THRESHOLD_PERCENT_FREE}%\n"
+		REPORT_MSG+="Free:	 	${pct_free}%\n"
 		REPORT_MSG+="---------\n"
 
-	done < <(df --human-readable --portability --local --exclude-type=btrfs "${df_args}")
+	done < <(df --human-readable --portability --local --exclude-type=btrfs "${df_args[@]}")
 
 	REPORT_MSG+="\n\n"
 }
