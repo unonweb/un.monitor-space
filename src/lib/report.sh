@@ -13,8 +13,7 @@
 
 function report {
 
-	local disk="${1}"
-	local input="${2}"
+	local input="${1}"
 	local interval_seconds
 
 	# CHECK internal dependencies
@@ -34,7 +33,7 @@ function report {
 	done
 
 	# CHECK vars
-	for var in REPORT_MAIL REPORT_PERIOD MAIL_TO; do
+	for var in input REPORT_MAIL REPORT_PERIOD MAIL_TO; do
 		if [[ -z "${!var}" ]]; then
 			log "<3> Required var missing: ${var}"
 			return 1
@@ -86,12 +85,12 @@ function report {
 		if [[ -f "${input}" ]]; then
 			# It's a file!
 			# Stream it directly to preserve newlines
-			mail -s "${MAIL_SUBJECT} [${disk}] REPORT" "${MAIL_TO}" < "${input}"
+			mail -s "${MAIL_SUBJECT} ${REPORT_PERIOD} REPORT" "${MAIL_TO}" < "${input}"
 			rc_mail=${?}
 		else
 			# It's a raw string! 
 			echo -e "${input}" | \
-			mail -s "${MAIL_SUBJECT} [${disk}] REPORT" "${MAIL_TO}"
+			mail -s "${MAIL_SUBJECT} ${REPORT_PERIOD} REPORT" "${MAIL_TO}"
 			rc_mail=${?}
 		fi
 
