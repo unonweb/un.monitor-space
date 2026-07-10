@@ -82,7 +82,7 @@ function check_disk_free {
 		
 		# REPORT
 		REPORT_MSG+="FS:		${filesystem}\n"
-		REPORT_MSG+="MOUNT: 	${mount_point}\n"
+		REPORT_MSG+="MOUNT: 		${mount_point}\n"
 		REPORT_MSG+="Size: 		${size}\n"
 		REPORT_MSG+="Used: 		${used}\n"
 		REPORT_MSG+="Free:	 	${pct_free}%\n"
