@@ -26,8 +26,6 @@ source "${SCRIPT_DIR}/lib/get_state.sh"
 
 function main {
 
-	local df_args=""
-
 	# CHECK root
 	if [ "${UID}" -ne 0 ]; then
   		echo "This script must be run as root."
@@ -73,11 +71,6 @@ function main {
 		log "<6> Creating cache file at: ${CACHE_FILE}"
 		touch "${CACHE_FILE}"
 	fi
-
-	# BUILD args
-	for type in "${DF_EXCLUDE_TYPES[@]}"; do
-		df_args+="--exclude-type=${type} "
-	done
 
 	# MAIN
 	cleanup_cache

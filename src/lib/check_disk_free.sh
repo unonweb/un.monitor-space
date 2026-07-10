@@ -24,6 +24,12 @@ function check_disk_free {
     	fi
 	done
 
+	# BUILD args
+	local df_args=""
+	for type in "${DF_EXCLUDE_TYPES[@]}"; do
+		df_args+="--exclude-type=${type} "
+	done
+
 	while read -r filesystem size used avail use_pct mount_point; do
 
 		# Skip the header row
