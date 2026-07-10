@@ -90,8 +90,8 @@ function report {
 			rc_mail=${?}
 		else
 			# It's a raw string! 
-			# Use a here-string (<<<) to preserve newlines 
-			mail -s "${MAIL_SUBJECT} [${disk}] REPORT" "${MAIL_TO}" <<< "${input}"
+			echo -e "${input}" | \
+			mail -s "${MAIL_SUBJECT} [${disk}] REPORT" "${MAIL_TO}"
 			rc_mail=${?}
 		fi
 
