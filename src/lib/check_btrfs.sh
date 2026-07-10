@@ -82,7 +82,6 @@ function check_btrfs {
 		fi
 
 		# REPORT
-		REPORT_MSG+="\n---\n"
 		REPORT_MSG+="MOUNT:			${mount_point}\n"
 		REPORT_MSG+="TYPE: 			BTRFS\n"
 		REPORT_MSG+="total_size:	${total_size}\n"
@@ -90,6 +89,7 @@ function check_btrfs {
 		REPORT_MSG+="pct_free:		${pct_free}\n"
 		REPORT_MSG+="Threshold:		${THRESHOLD_PERCENT_FREE}\n\n"
 		REPORT_MSG+="${btrfs_output}"
+		REPORT_MSG+="---------\n"
 
 	done < /proc/mounts
 }
