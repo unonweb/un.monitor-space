@@ -60,6 +60,7 @@ function main {
 
 	# SET vars
 	CACHE_FILE="${STATE_DIR}/cache.txt"
+	LOG_FILE="${STATE_DIR}/log.txt"
 
 	# MKDIR state
 	if [[ ! -d "${STATE_DIR}" ]]; then
