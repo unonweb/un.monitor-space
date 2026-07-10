@@ -30,6 +30,8 @@ function check_disk_free {
 		df_args+="--exclude-type=${type} "
 	done
 
+	REPORT_MSG+="DISK FREE\n"
+	REPORT_MSG+="=========\n\n"
 	while read -r filesystem size used avail use_pct mount_point; do
 
 		# Skip the header row
@@ -87,4 +89,6 @@ function check_disk_free {
 		REPORT_MSG+="Threshold:	${THRESHOLD_PERCENT_FREE}%\n"
 
 	done < <(df --human-readable --portability --local --exclude-type=btrfs "${df_args}")
+
+	REPORT_MSG+="\n\n"
 }

@@ -17,6 +17,8 @@ function check_btrfs {
     	fi
 	done
 
+	REPORT_MSG+="BTRFS\n"
+	REPORT_MSG+="=====\n\n"
 	# Loop through /proc/mounts to find all 'btrfs' filesystems
 	# We use a while loop to read line-by-line using Bash internals
 	while read -r device mount_point fs_type options _; do
