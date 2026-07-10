@@ -1,0 +1,11 @@
+[Unit]
+Description=Run %N.service periodically
+
+[Timer]
+OnBootSec=9min
+OnCalendar=*:0/25
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

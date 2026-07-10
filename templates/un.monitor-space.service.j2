@@ -1,0 +1,17 @@
+[Unit]
+Description=Monitor & report disk space
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart={{ __un_install_path_exec }}
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=%N
+SyslogLevelPrefix=true
+
+# Security hardening
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+ReadWritePaths={{ un_install_dst_path }}/state
