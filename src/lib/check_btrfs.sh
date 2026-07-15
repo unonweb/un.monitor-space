@@ -32,12 +32,18 @@ function check_btrfs {
 		# Query btrfs for data in Gigabytes (requires root/sudo)
 		local btrfs_output=$(btrfs filesystem usage -g "${mount_point}" 2>/dev/null)
 		
-		# Extract Total Device Size (Integer only) using Bash regex
+		# EXTRACT total_size (integer)
 		if [[ "${btrfs_output}" =~ Device[[:space:]]+size:[[:space:]]*([0-9]+) ]]; then
 			local total_size="${BASH_REMATCH[1]}"
 		fi
+
+		# EXTRACT free (integer)
+		# Represents the possible space remaining
+		if [[ "${btrfs_output}" =~ Free[[:space:]]+\(estimated\):[[:space:]]*([0-9]+) ]]; then
+			local free="${BASH_REMATCH[1]}"
+		fi
 		
-		# Extract Estimated Minimum Free Space (Integer only)
+		# EXTRACT min_free (integer)
 		# Represents the guaranteed space remaining
 		if [[ "${btrfs_output}" =~ min:[[:space:]]*([0-9]+) ]]; then
 			local min_free="${BASH_REMATCH[1]}"
@@ -46,13 +52,14 @@ function check_btrfs {
 		# Calculate percentage using Bash integer math
 		if [[ -n "${total_size}" && -n "${min_free}" && "${total_size}" -gt 0 ]]; then
 			# Bash math trick: (Free * 100) / Total gives us the floor percentage
-			local pct_free=$(( (min_free * 100) / total_size ))
+			local free_pct=$(( (free * 100) / total_size ))
+			local min_free_pct=$(( (min_free * 100) / total_size ))
 			
 			log "<7> Total Size: ${total_size} GiB"
-			log "<7> Free Space: ${min_free} GiB (${pct_free}% free)"
+			log "<7> Free Space: ${min_free}GiB - ${free}GiB (${min_free_pct}% - ${free_pct}%)"
 			
 			# THRESHOLD
-			if (( pct_free < THRESHOLD_PERCENT_FREE )); then
+			if (( free_pct < THRESHOLD_PERCENT_FREE )); then
 
 				# CACHE
 				if [[ -f "${CACHE_FILE}" ]] && grep --quiet --fixed-strings "|${mount_point}" "${CACHE_FILE}"; then
@@ -61,12 +68,14 @@ function check_btrfs {
 				else
 					# ALERT msg
 					local alert_msg=""
-					alert_msg+="ALERT: 		DISK SPACE BELOW THRESHOLD!\n"
-					alert_msg+="Mount: ${mount_point}\n"
-					alert_msg+="Total Size: ${total_size}\n"
-					alert_msg+="Min free:	${min_free}\n"
-					alert_msg+="Threshold: 	${THRESHOLD_PERCENT_FREE}%\n"
-					alert_msg+="Pct free: 	${pct_free}%\n"
+					alert_msg+="ALERT: 			DISK SPACE BELOW THRESHOLD!\n"
+					alert_msg+="Mount:		${mount_point}\n"
+					alert_msg+="Total Size: 	${total_size}\n"
+					alert_msg+="Free:			${free}\n"
+					alert_msg+="Min free:		${min_free}\n"
+					alert_msg+="Threshold: 		${THRESHOLD_PERCENT_FREE}%\n"
+					alert_msg+="Free pct: 		${free_pct}%\n"
+					alert_msg+="Min free pct: 	${min_free_pct}%\n"
 
 					ALERT_MSG+="${msg}\n\n"
 
@@ -85,9 +94,11 @@ function check_btrfs {
 		REPORT_MSG+="Mount:			${mount_point}\n"
 		REPORT_MSG+="Type:			BTRFS\n"
 		REPORT_MSG+="Total size:		${total_size}GiB\n"
+		REPORT_MSG+="Free:			${free}\n"
 		REPORT_MSG+="Min free:		${min_free}GiB\n"
 		REPORT_MSG+="Threshold:		${THRESHOLD_PERCENT_FREE}%\n"
-		REPORT_MSG+="Pct free:		${pct_free}%\n"
+		REPORT_MSG+="Free pct: 		${free_pct}%\n"
+		REPORT_MSG+="Min free pct: 	${min_free_pct}%\n"
 		REPORT_MSG+="${btrfs_output}\n\n"
 		REPORT_MSG+="---------------------------------------------\n\n"
 
