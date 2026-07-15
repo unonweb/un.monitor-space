@@ -98,9 +98,8 @@ function check_btrfs {
 		REPORT_MSG+="Min free:		${min_free}GiB\n"
 		REPORT_MSG+="Threshold:		${THRESHOLD_PERCENT_FREE}%\n"
 		REPORT_MSG+="Free pct: 		${free_pct}%\n"
-		REPORT_MSG+="Min free pct: 	${min_free_pct}%\n"
-		REPORT_MSG+="${btrfs_output}\n\n"
-		REPORT_MSG+="---------------------------------------------\n\n"
+		REPORT_MSG+="Min free pct: 		${min_free_pct}%\n"
+		REPORT_MSG+="---------------------------------------------\n"
 
 	done < /proc/mounts
 }
