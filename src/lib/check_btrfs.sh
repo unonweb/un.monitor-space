@@ -62,11 +62,11 @@ function check_btrfs {
 					# ALERT msg
 					local alert_msg=""
 					alert_msg+="ALERT: 		DISK SPACE BELOW THRESHOLD!\n"
-					alert_msg+="Mountpoint: ${mount_point}\n"
+					alert_msg+="Mount: ${mount_point}\n"
 					alert_msg+="Total Size: ${total_size}\n"
-					alert_msg+="min_free:	${min_free}\n"
-					alert_msg+="pct_free: 	${pct_free}%\n"
+					alert_msg+="Min free:	${min_free}\n"
 					alert_msg+="Threshold: 	${THRESHOLD_PERCENT_FREE}%\n"
+					alert_msg+="Pct free: 	${pct_free}%\n"
 
 					ALERT_MSG+="${msg}\n\n"
 
@@ -82,12 +82,12 @@ function check_btrfs {
 		fi
 
 		# REPORT
-		REPORT_MSG+="MOUNT:			${mount_point}\n"
-		REPORT_MSG+="TYPE:			BTRFS\n"
-		REPORT_MSG+="total_size:		${total_size}GiB\n"
-		REPORT_MSG+="min_free:		${min_free}GiB\n"
-		REPORT_MSG+="Threshold:		${THRESHOLD_PERCENT_FREE}%\n\n"
-		REPORT_MSG+="pct_free:		${pct_free}%\n"
+		REPORT_MSG+="Mount:			${mount_point}\n"
+		REPORT_MSG+="Type:			BTRFS\n"
+		REPORT_MSG+="Total size:		${total_size}GiB\n"
+		REPORT_MSG+="Min free:		${min_free}GiB\n"
+		REPORT_MSG+="Threshold:		${THRESHOLD_PERCENT_FREE}%\n"
+		REPORT_MSG+="Pct free:		${pct_free}%\n"
 		REPORT_MSG+="${btrfs_output}\n\n"
 		REPORT_MSG+="---------------------------------------------\n\n"
 
